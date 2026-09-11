@@ -1,0 +1,25 @@
+#include <lpc21xx.h>
+#define LED1 (1 << 17)    	// Define LED bit mask for P0.17
+#define LED2 (1<<18)        //Define LED bit mask for P0.18
+typedef unsigned int us; 
+
+void delay_ms(us ms)
+{
+    T0PR = 15000 - 1;    // Prescaler for 1ms delay at 15 MHz PCLK
+    T0TC = T0PC =0;        // Reset & disable timer
+    T0TCR = 0x01;        // Enable timer
+    while (T0TC < ms);   // Wait until the timer counter reaches 'ms'
+    T0TCR = 0x00;        // Stop timer
+}
+
+int main()
+{
+    IODIR0 |= LED1 |LED2;       // Configure P0.17 ,P0.18 as output
+    while (1)
+    {
+        IOCLR0 = LED1 | LED2;    // turn LED1 LED2 ON
+        delay_ms(500);   // 500 ms ON
+        IOSET0 = LED1 | LED2;    // Write 1 to turn LED1 LED2 OFF
+        delay_ms(500);   // 500 ms OFF
+    }
+}	
