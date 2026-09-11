@@ -1,0 +1,31 @@
+Write an ECP control the LED using PUSH button.
+
+#include<lpc21xx.h>          
+#define LED (1<<17)          // LED connected to P0.17
+#define SW  14               // Push-button switch connected to P0.14
+typedef unsigned int us; 
+void delay_ms(us ms)
+{
+    T0PR = 15000 - 1;    // Prescaler for 1ms delay at 15 MHz PCLK
+    T0TC = T0PC =0;        // Reset & disable timer
+    T0TCR = 0x01;        // Enable timer
+    while (T0TC < ms);   // Wait until the timer counter reaches 'ms'
+    T0TCR = 0x00;        // Stop timer
+}
+
+int main()
+{
+    IODIR0|= LED;           // Set P0.17 as output (for LED)
+    while(1)                 
+    {
+        // Read switch state (active-low: 0 = pressed, 1 = released)
+        if(((IOPIN0>>SW)&1)==0)  
+        {
+            IOCLR0 = LED;     // Turn ON LED (active-low)
+        }
+        else
+        {
+            IOSET0 = LED;     // Turn OFF LED (active-low)
+        }
+    }
+}
