@@ -1,3 +1,4 @@
+Write an ECP to blink two (Active LOW ) LEDS connected to P0.17 AND P0.18 using LPC2129 500ms delay ON/OFF 
 #include <lpc21xx.h>
 #define LED1 (1 << 17)    	// Define LED bit mask for P0.17
 #define LED2 (1<<18)        //Define LED bit mask for P0.18
