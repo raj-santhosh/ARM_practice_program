@@ -1,0 +1,31 @@
+Write an ECP t shift 8 LEDs from LEFT to RIGHT one by one 500ms_delay using LPC2129 
+
+#include <lpc21xx.h>
+#define LED (1 << 0 | 1<<1 | 1<<2 | 1<<3 | 1<<4 | 1<<5 | 1<<6 | 1<<7)
+typedef unsigned int us; 
+
+void delay_ms(us ms)
+{
+    T0PR = 15000 - 1;    // Prescaler for 1ms delay at 15 MHz PCLK
+    T0TC = T0PC =0;        // Reset & disable timer
+    T0TCR = 0x01;        // Enable timer
+    while (T0TC < ms);   // Wait until the timer counter reaches 'ms'
+    T0TCR = 0x00;        // Stop timer
+}
+int main()
+{
+    int i, j;                    
+    PINSEL0 = (0x00000000);           // Configure P0.0–P0.15 as GPIO
+    IODIR0 |= LED;             // Set P0.0–P0.7 as output don't affect other pins
+    IOSET0 = 0xFF;                   // Turn OFF all LEDs initially (active-low)
+
+    for(i=0; i<10; i++)        // Repeat pattern 10 times (change to while(1) for infinite loop)
+    {
+        for(j=0; j<8;j++)     // Loop through each LED from left (P0.0) to right (P0.7)
+        {
+            IOCLR0 = 1 << j;        // Turn ON the current LED (active-low)
+            delay_ms(500);          // Wait 500 ms
+            IOSET0 = 1 << j;        // Turn OFF the current LED
+        }
+    }
+}
