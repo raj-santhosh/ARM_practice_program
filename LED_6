@@ -1,0 +1,29 @@
+Write an ECP to shift 8 LEDs (ACTIVE LOW) CUMULATIVELY from LEFT TO RIGHT using LPC2129.
+#include <lpc21xx.h>
+#define LED 0xFF
+typedef unsigned int us; 
+
+void delay_ms(us ms)
+{
+    T0PR = 15000 - 1;    // Prescaler for 1ms delay at 15 MHz PCLK
+    T0TC = T0PC =0;        // Reset & disable timer
+    T0TCR = 0x01;        // Enable timer
+    while (T0TC < ms);   // Wait until the timer counter reaches 'ms'
+    T0TCR = 0x00;        // Stop timer
+}
+int main()
+{
+    int i,j;                      
+    PINSEL0 = (0x00000000);           // Configure P0.0–P0.15 as GPIO
+    IODIR0 |= LED;             // Set P0.0–P0.7 as output
+		while (1)                  
+    {
+        IOSET0 = LED;          // Turn OFF all LEDs initially (active low: 1 = OFF)
+        for (i = 0; i < 8; i++)
+        {
+            IOCLR0 = (1 << i); // Turn ON LED one by one (active low: 0 = ON)
+            delay_ms(100);     // Small delay to visualize the LED lighting effect
+        }
+    }
+    
+}
