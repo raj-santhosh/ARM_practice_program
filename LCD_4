@@ -1,0 +1,24 @@
+Write an ECP press and release the switch increment the counter on LCD.once reach counter 10 again star from 0 
+
+#include<lpc21xx.h>
+#include "header.h"
+#define sw ((IOPIN0>>14)&1)
+int main()
+{
+  int c=0;
+	lcd_init();
+	while(1)
+	{
+		if(sw==0)           // wait for press the switch
+		{
+			while(sw==0);     //wait for release the switch
+					  c++;
+		  lcd_cmd(0x80);
+		  lcd_data((c/10) +48);
+		  lcd_cmd(0x81);
+		  lcd_data((c%10) +48);
+		}
+		if(c==10)
+			c=0;
+	}
+	
