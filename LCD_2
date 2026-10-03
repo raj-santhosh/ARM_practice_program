@@ -1,4 +1,4 @@
-Write an ECP print string on LCD
+Write an ECP shift a string 0x80 to 0x8F with 500ms_delay and continue on LCD
 
 #include<lpc21xx.h>
 #include "header.h"
@@ -9,9 +9,9 @@ int main()
 	{
 		for(int i=0;i<16;i++)
 		{
-			lcd_cmd(0xC0+i);
-			lcd_string("Dragon booster");
-			delay_ms(200);
+			lcd_cmd(0x80+i);
+			lcd_string("Dragon");
+			delay_ms(500);
 			lcd_cmd(0x01);
 		}
 	}
