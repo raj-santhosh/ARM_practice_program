@@ -1,0 +1,25 @@
+write an ECP print on LCD minutes and seconds with 500ms_delay and continue
+
+#include<lpc21xx.h>
+#include "header.h"
+int main()
+{
+	lcd_init();
+	while(1)
+	{
+		for(int min=0; min<60; min++)
+		{
+			for(int sec=0; sec<60 ;sec++)
+			{
+				lcd_cmd(0x80);
+				lcd_data(min/10 +48);
+				lcd_data(min%10 +48);
+				lcd_data(':');
+				lcd_data(sec/10 +48);
+				lcd_data(sec%10 +48);
+				
+				delay_ms(500);
+				lcd_cmd(0x01);
+			}
+	}
+}
