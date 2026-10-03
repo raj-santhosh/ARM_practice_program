@@ -1,0 +1,19 @@
+Write an ECP print 0 to 59 on LCD with 500ms delay_ms and continue.
+
+#include<lpc21xx.h>
+int main()
+{
+  lcd_init();
+	while(1)
+	{
+		for(int i=0;i<60;i++)
+		{
+			lcd_cmd(0x80);
+			lcd_data((i/10) +48);
+			lcd_cmd(0x81);
+			lcd_data((i%10) +48);
+			delay_ms(500);
+			lcd_cmd(0x01);
+		}
+	}
+}
