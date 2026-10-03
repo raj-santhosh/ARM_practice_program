@@ -1,0 +1,28 @@
+//  Write an ECP print a to z 1st row and ascii value on 2nd row
+
+#include<lpc21.xx.h>
+int i,num;
+while(1)
+{
+		for(i=0;i<26;i++)
+		{
+			lcd_cmd(0x80);         // LCD 1st ROW first position
+			lcd_data('a'+i);
+			
+      lcd_cmd(0xC0);         // LCD 2nd ROW first position
+			num='a'+i;
+			if(num>=100)
+      {
+				lcd_data(num/100+48); // hun
+				lcd_data((num/10)%10+48); //tens
+				lcd_data(num%10+48);  //ones
+			}
+			else
+			{
+			lcd_data(num/10+48);
+			lcd_data(num%10+48);
+			}
+			delay_ms(200);
+			lcd_cmd(0x01);
+		}
+	}
