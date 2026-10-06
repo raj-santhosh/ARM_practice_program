@@ -1,0 +1,31 @@
+Write an ECP display Custom characters CGRAM on LCD
+
+#include "header.h"
+int main()
+{
+	lcd_init();
+	lcd_string("Symbol:");
+for(int i=0;i<16;i++)
+{
+		lcd_cgram();
+		lcd_cmd (0x87+i);
+		lcd_data(1);
+}
+for(int i=0;i<16;i++)
+{
+		lcd_cgram();
+		lcd_cmd (0xc0+i);
+		lcd_data(1);
+}
+
+unsigned char a1[10]={0x0,0x0,0xa,0x15,0x11,0xa,0x4};           //size of each page 8 bytes 8 rows page 0 - page 7
+											//{0x4,0x4,0xe,0xa,0xa,0xe,0x1f,0x1f}
+											//{0x0,0x0a,0x0a,0x0,0x0,0x11,0xe,0x0};
+void lcd_cgram()
+{
+	lcd_cmd(0x40);      // select CGRAM starting address 0x40-page 0
+	for(int i=0;i<8;i++)
+	{
+		lcd_data(a1[i]);
+	}
+}
