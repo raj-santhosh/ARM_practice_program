@@ -1,0 +1,25 @@
+Write an ECP receive single digit through UART0 and Print BINARY on serial terminal.
+
+#include<lpc21xx.h>
+#include "uart0_header.h"
+int main()
+{	
+  int pos;
+	unsigned int temp;
+	UART0_init(9600);
+	while(1)
+	{
+		UART0_tx_string("Enter the num:\n");
+		temp=UART0_rx();;
+		UART0_tx(temp);
+		temp=temp-48;
+		while(UART0_rx()!=13);
+			UART0_tx_string("\r\nBinary values.\n");
+
+		for(pos=7; pos>=0 ;pos--)
+		{
+			UART0_tx(((temp>>pos)&1)+48);
+		}
+		UART0_tx_string("\n");
+	}
+}
