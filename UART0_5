@@ -1,0 +1,41 @@
+Write an ECP Implement basic calculator through serial terminal using UART0.
+
+#include<lpc21xx.h>
+#include "uart0_header.h"
+int main()
+{	
+	unsigned int a,b,result,op;
+	UART0_init(9600);	
+
+    UART0_tx_string("\r\n_____Basic calculator____\n EX:---One Digit_Operator_One Digit---\n");
+		
+	while(1)
+	{	
+		UART0_tx_string("\r\nEnter first digit:\n");
+		a = UART0_rx();              // receive 1st digit from serial terminal
+		UART0_tx(a);                 // retransmit serail terminal
+		while(UART0_rx()!=13);       // wait for enter key
+		
+		UART0_tx_string("\r\nEnter operator:\n");
+		op = UART0_rx();     
+		UART0_tx(op); 
+		while(UART0_rx()!=13);	
+		
+		UART0_tx_string("\r\nEnter second digit:\n");
+		b = UART0_rx();     
+		UART0_tx(b); 
+		while(UART0_rx()!=13); 
+		
+		UART0_tx_string("\r\nResult:");
+		switch(op)
+		{
+			case '+': result = (a-48)+(b-48); break;
+			case '-': result = (a-48)-(b-48); break;
+			case '*': result = (a-48)*(b-48); break;
+			case '/': result = (a-48)/(b-48); break;	
+			default : UART0_tx_string("Invalid Operation\n");
+		}
+	UART0_tx((result/10)+48);
+	UART0_tx((result%10)+48);
+	}
+}
