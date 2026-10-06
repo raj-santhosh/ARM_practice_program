@@ -1,0 +1,28 @@
+Write an ECP control Two LEDs through serial terminal using UART0.
+
+#include<lpc21xx.h>
+#include "uart0_header.h"
+#define LED1 (1<<17)
+#define LED2 (1<<18)
+int main()
+{	
+	unsigned int temp;
+	UART0_init(9600);
+	IODIR0 = LED1 | LED2;
+	IOSET0 = LED1 | LED2;
+	while(1)
+	{
+		UART0_tx_string("\r\n Enter menu based \n a.LED1 ON \n b.LED1 OFF \n c.LED2 ON \n d.LED2 OFF\n");
+		temp =UART0_rx();        //receive user option
+		UART0_tx(temp);          //retransmit on serial terminal
+		while(UART0_rx()!=13);   //wait for enter key
+		switch(temp)
+		{
+			case 'a': IOCLR0 =LED1 ; break;
+			case 'b': IOSET0 =LED1 ; break;
+			case 'c': IOCLR0 =LED2 ; break;
+			case 'd': IOSET0 =LED2 ; break;	
+			default : UART0_tx_string("Invalid Option\n");
+		}
+	}
+}
