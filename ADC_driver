@@ -1,0 +1,20 @@
+#include<lpc21xx.h>
+#define DONE ((ADDR>>31)&1)
+
+void adc_init()
+{
+	PINSEL1 |= 0x15400000; 		//alternate function pin select ADC PIN 0.27,0.28,0.29,0.30
+	ADCR = 0x00200400;    		//ADC 33Mhz, PDN =1, NOT select ADC, select 10-bit Resolution
+}
+
+unsigned int adc_read (unsigned int ch_num)
+{
+	unsigned int result =0;		
+	ADCR |= (1<<ch_num);		  //Select channel number
+	ADCR |= (1<<24);				  //Start ADC
+	while(DONE==0);				    //Wait for A/D conversion
+	ADCR ^= (1<<24);		  	  //Stop ADC
+	ADCR ^= (1<<ch_num);		  //dis-select ADC channel number
+	result = (ADDR >>6)&0x3ff;	//Extract 10-bit ADC Result
+	return result;
+}
